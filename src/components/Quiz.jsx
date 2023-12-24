@@ -8,6 +8,7 @@ export default function Quiz(props) {
     }
 
     if (props.isCorrect) {
+
       return `btn ${answer.isHeld ? "btn--checked_selected" : ""}`
     } else if (!props.isCorrect) {
       return `btn 

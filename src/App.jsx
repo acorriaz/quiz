@@ -10,10 +10,11 @@ function App() {
   const [quizData, setQuizData] = useState([])
   const [userSelected, setUserSelected] = useState({})
   const [isChecked, setIsChecked] = useState(false)
+  const [totalScore, setTotalScore] = useState("")
+  // TODO: state to check total score
 
-  console.log(quizData)
 
-  // Fetch from API
+  // Fetch quizData
   useEffect(() => {
     const fetchData = async () => {
       const res = await fetch('https://opentdb.com/api.php?amount=5&category=15&difficulty=medium&type=multiple')
@@ -51,6 +52,18 @@ function App() {
     setCurrentPage(page)
   }
 
+  function updateScore() {
+    setTotalScore(() => {
+      let score = 0
+      for (let quiz of quizData) {
+        if (userSelected[quiz.question] === quiz.correct_answer) {
+          score++
+        }
+      }
+      return score
+    })
+  }
+
   function handleClick(questionOfAns, choice)  {
     // change isHeld value
     setQuizData((prevQuiz) => {
@@ -81,6 +94,7 @@ function App() {
 
   function handleCheck() {
     setIsChecked((prevState) => !prevState)
+    updateScore()
   }
 
   const quizComponents = quizData.map((quiz) => (
@@ -106,9 +120,13 @@ function App() {
         currentPage === "quiz" &&
         <>
           {quizComponents}
-          {isChecked && <p className="quiz--checked_text">Placeholder</p>}
+          {isChecked && <p className="quiz--checked_text">You scored {totalScore}/5 correct answers</p>}
           <button onClick={handleCheck}>Check Answer</button>
-          <button onClick={() => changePage("landing")}>Back</button>
+          {
+            isChecked
+            ? <button>Play Again</button>
+            : <button onClick={() => changePage("landing")}>Back</button>
+          }
         </>
       }
     </>
