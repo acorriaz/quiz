@@ -8,8 +8,10 @@ import Quiz from "./components/Quiz.jsx";
 function App() {
   const [currentPage, setCurrentPage] = useState("landing")
   const [quizData, setQuizData] = useState([])
+  // TODO: setUserSelected
+  const [userSelected, setUserSelected] = useState({})
 
-  console.log(quizData)
+  console.log(userSelected)
 
   useEffect(() => {
     const fetchData = async () => {
@@ -48,9 +50,7 @@ function App() {
     setCurrentPage(page)
   }
 
-  function handleHeld(questionOfAns, choice)  {
-    console.log("choice", choice)
-    console.log("question", questionOfAns)
+  function handleClick(questionOfAns, choice)  {
     setQuizData((prevQuiz) => {
       return prevQuiz.map((quizQuestion) => {
         // find correct choice and flip value
@@ -71,6 +71,8 @@ function App() {
         }
       })
     })
+
+    setUserSelected((prevSelected) => ({...prevSelected, [questionOfAns]: choice}))
   }
 
   const quizComponents = quizData.map((quiz) => (
@@ -78,7 +80,7 @@ function App() {
       key={nanoid()}
       question={quiz.question}
       answers={quiz.allAnswers}
-      handleHeld={handleHeld}
+      handleClick={handleClick}
     />))
 
   return (

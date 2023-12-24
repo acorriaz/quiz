@@ -6,7 +6,7 @@ export default function Quiz(props) {
       key={nanoid()}
       // TODO: click to update quizData state and add to userSelected state
       className={`btn ${answer.isHeld ? "btn-selected" : ""}`}
-      onClick={() => props.handleHeld(props.question, answer.text)}
+      onClick={() => props.handleClick(props.question, answer.text)}
     >
       {answer.text}
     </button>
