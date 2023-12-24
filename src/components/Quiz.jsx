@@ -1,11 +1,25 @@
 import {nanoid} from "nanoid";
 
 export default function Quiz(props) {
+
+  const calculateClassName = (answer) => {
+    if (!props.isChecked) {
+      return `btn ${answer.isHeld ? "btn--selected" : ""}`
+    }
+
+    if (props.isCorrect) {
+      return `btn ${answer.isHeld ? "btn--checked_selected" : ""}`
+    } else if (!props.isCorrect) {
+      return `btn 
+      ${answer.isHeld ? "btn--checked_selected" : ""} 
+      ${answer.text === props.correctAns ? "btn--checked_correct_ans" : ""}`
+    }
+  }
+
   const answersElement = props.answers.map((answer) => (
     <button
       key={nanoid()}
-      // TODO: click to update quizData state and add to userSelected state
-      className={`btn ${answer.isHeld ? "btn-selected" : ""}`}
+      className={calculateClassName(answer)}
       onClick={() => props.handleClick(props.question, answer.text)}
     >
       {answer.text}

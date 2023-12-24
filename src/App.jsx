@@ -8,11 +8,12 @@ import Quiz from "./components/Quiz.jsx";
 function App() {
   const [currentPage, setCurrentPage] = useState("landing")
   const [quizData, setQuizData] = useState([])
-  // TODO: setUserSelected
   const [userSelected, setUserSelected] = useState({})
+  const [isChecked, setIsChecked] = useState(false)
 
-  console.log(userSelected)
+  console.log(quizData)
 
+  // Fetch from API
   useEffect(() => {
     const fetchData = async () => {
       const res = await fetch('https://opentdb.com/api.php?amount=5&category=15&difficulty=medium&type=multiple')
@@ -51,6 +52,7 @@ function App() {
   }
 
   function handleClick(questionOfAns, choice)  {
+    // change isHeld value
     setQuizData((prevQuiz) => {
       return prevQuiz.map((quizQuestion) => {
         // find correct choice and flip value
@@ -59,8 +61,10 @@ function App() {
             answer.text === choice ? {
                 ...answer,
                 isHeld: !answer.isHeld
-            } :
-              answer
+            } : {
+              ...answer,
+              isHeld: false
+            }
           ))
           return {
             ...quizQuestion,
@@ -75,11 +79,18 @@ function App() {
     setUserSelected((prevSelected) => ({...prevSelected, [questionOfAns]: choice}))
   }
 
+  function handleCheck() {
+    setIsChecked((prevState) => !prevState)
+  }
+
   const quizComponents = quizData.map((quiz) => (
     <Quiz
       key={nanoid()}
       question={quiz.question}
       answers={quiz.allAnswers}
+      correctAns={quiz.correct_answer}
+      isCorrect={userSelected[quiz.question] === quiz.correct_answer}
+      isChecked={isChecked}
       handleClick={handleClick}
     />))
 
@@ -95,6 +106,8 @@ function App() {
         currentPage === "quiz" &&
         <>
           {quizComponents}
+          {isChecked && <p className="quiz--checked_text">Placeholder</p>}
+          <button onClick={handleCheck}>Check Answer</button>
           <button onClick={() => changePage("landing")}>Back</button>
         </>
       }
