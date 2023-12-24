@@ -22,6 +22,7 @@ export default function Quiz(props) {
       key={nanoid()}
       className={calculateClassName(answer)}
       onClick={() => props.handleClick(props.question, answer.text)}
+      disabled={props.isChecked}
     >
       {answer.text}
     </button>
