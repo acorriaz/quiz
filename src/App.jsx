@@ -11,57 +11,45 @@ function App() {
   const [userSelected, setUserSelected] = useState({})
   const [isChecked, setIsChecked] = useState(false)
   const [totalScore, setTotalScore] = useState("")
-  // TODO: state to check total score
 
+  console.log("quiz data",quizData)
 
   // Fetch quizData
   useEffect(() => {
-    const fetchData = async () => {
-      const res = await fetch('https://opentdb.com/api.php?amount=5&category=15&difficulty=medium&type=multiple')
-      const data = await res.json()
-
-      const newData = data.results.map((quiz) => {
-        const { question } = quiz
-        const answers = [...quiz.incorrect_answers, quiz.correct_answer,]
-
-        // Add isHeld to each answers
-        const answersWithHeld = answers.map((answer) => {
-          return {
-            text: decode(answer),
-            isHeld: false
-          }
-        })
-
-        // Shuffle answers
-        answersWithHeld.sort(() => Math.random() - 0.5)
-
-        return {
-          ...quiz,
-          allAnswers: answersWithHeld,
-          question: decode(question)
-        }
-      })
-
-      setQuizData(newData)
-    }
-
     fetchData()
   }, [])
 
-  function changePage(page) {
-    setCurrentPage(page)
+  const fetchData = async () => {
+    const res = await fetch('https://opentdb.com/api.php?amount=5&category=15&difficulty=medium&type=multiple')
+    const data = await res.json()
+
+    const newData = data.results.map((quiz) => {
+      const { question } = quiz
+      const answers = [...quiz.incorrect_answers, quiz.correct_answer,]
+
+      // Add isHeld to each answers
+      const answersWithHeld = answers.map((answer) => {
+        return {
+          text: decode(answer),
+          isHeld: false
+        }
+      })
+
+      // Shuffle answers
+      answersWithHeld.sort(() => Math.random() - 0.5)
+
+      return {
+        ...quiz,
+        allAnswers: answersWithHeld,
+        question: decode(question)
+      }
+    })
+
+    setQuizData(newData)
   }
 
-  function updateScore() {
-    setTotalScore(() => {
-      let score = 0
-      for (let quiz of quizData) {
-        if (userSelected[quiz.question] === quiz.correct_answer) {
-          score++
-        }
-      }
-      return score
-    })
+  function changePage(page) {
+    setCurrentPage(page)
   }
 
   function handleClick(questionOfAns, choice)  {
@@ -94,7 +82,28 @@ function App() {
 
   function handleCheck() {
     setIsChecked((prevState) => !prevState)
-    updateScore()
+    handleScore()
+  }
+
+  function handleScore() {
+    setTotalScore(() => {
+      let score = 0
+      for (let quiz of quizData) {
+        if (userSelected[quiz.question] === quiz.correct_answer) {
+          score++
+        }
+      }
+      return score
+    })
+  }
+
+  function handlePlayAgain() {
+    setCurrentPage("landing")
+    setQuizData([])
+    setUserSelected({})
+    setIsChecked(false)
+    setTotalScore("")
+    fetchData()
   }
 
   const quizComponents = quizData.map((quiz) => (
@@ -124,7 +133,7 @@ function App() {
           <button onClick={handleCheck}>Check Answer</button>
           {
             isChecked
-            ? <button>Play Again</button>
+            ? <button onClick={handlePlayAgain}>Play Again</button>
             : <button onClick={() => changePage("landing")}>Back</button>
           }
         </>
