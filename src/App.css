@@ -1,8 +1,18 @@
 #root {
-  max-width: 1280px;
+  max-width: 1110px;
+  max-height: 550px;
+  background: #F5F7FB;
   margin: 0 auto;
   padding: 2rem;
   text-align: center;
+}
+
+.landing--header {
+  color: #293264;
+  text-align: center;
+  font-family: Karla;
+  font-size: 2rem;
+  font-weight: 700;
 }
 
 .btn--selected {

@@ -12,8 +12,6 @@ function App() {
   const [isChecked, setIsChecked] = useState(false)
   const [totalScore, setTotalScore] = useState("")
 
-  console.log("quiz data",quizData)
-
   // Fetch quizData
   useEffect(() => {
     fetchData()
@@ -48,7 +46,7 @@ function App() {
     setQuizData(newData)
   }
 
-  function changePage(page) {
+  function handlePage(page) {
     setCurrentPage(page)
   }
 
@@ -122,7 +120,7 @@ function App() {
       {
         currentPage === "landing" &&
         <LandingPage
-          changePage={changePage}
+          handlePage={handlePage}
         />
       }
       {
@@ -130,11 +128,11 @@ function App() {
         <>
           {quizComponents}
           {isChecked && <p className="quiz--checked_text">You scored {totalScore}/5 correct answers</p>}
-          <button onClick={handleCheck}>Check Answer</button>
+          <button onClick={handleCheck} disabled={isChecked}>Check Answer</button>
           {
             isChecked
             ? <button onClick={handlePlayAgain}>Play Again</button>
-            : <button onClick={() => changePage("landing")}>Back</button>
+            : <button onClick={() => handlePage("landing")}>Back</button>
           }
         </>
       }
